@@ -23,7 +23,7 @@ defmodule ExampleJsonParse do
 
     with {:ok, map} <- Jason.decode(binary),
          catalog = MapShaper.from_map(%ProductCatalog{}, map, &maybe_remove_locale/1),
-         {:ok, catalog} <- ProductCatalog.ensure_type_ok(catalog) do
+         {:ok, catalog} <- ProductCatalog.ensure_type(catalog) do
       {:ok, to_products_list(catalog)}
     end
   end

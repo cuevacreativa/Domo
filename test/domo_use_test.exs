@@ -261,7 +261,7 @@ defmodule DomoUseTest do
       assert_raise RuntimeError, err_regex, fn -> apply(Module, :new!, [%{}]) end
       assert_raise RuntimeError, err_regex, fn -> apply(Module, :new, [%{}]) end
       assert_raise RuntimeError, err_regex, fn -> apply(Module, :ensure_type!, [%{__struct__: Module}]) end
-      assert_raise RuntimeError, err_regex, fn -> apply(Module, :ensure_type_ok, [%{__struct__: Module}]) end
+      assert_raise RuntimeError, err_regex, fn -> apply(Module, :ensure_type, [%{__struct__: Module}]) end
     end
 
     test "Not generate specs if no_specs option is given" do

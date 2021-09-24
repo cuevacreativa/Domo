@@ -97,13 +97,13 @@ Then `PurchaseOrder` struct can be constructed consistently like that:
       items: [%LineItem{amount: 150}, %LineItem{amount: 100}]
     }
 
-    iex> PurchaseOrder.ensure_type_ok(updated_po)
+    iex> PurchaseOrder.ensure_type(updated_po)
     {:error, [t: "Sum of line item amounts should be <= to approved limit"]}
     
     iex> updated_po = %{po | items: [LineItem.new!(amount: 150)]}
     %PurchaseOrder{approved_limit: 200, id: 1000, items: [%LineItem{amount: 150}]}
     
-    iex> PurchaseOrder.ensure_type_ok(updated_po)
+    iex> PurchaseOrder.ensure_type(updated_po)
     {:ok, %PurchaseOrder{approved_limit: 200, id: 1000, items: [%LineItem{amount: 150}]}}
 
 See the [Callbacks](#callbacks) section for more details about functions added to the struct.
@@ -264,11 +264,11 @@ or with `Map` module functions.
 
 </blockquote>
 
-### ensure_type_ok/2/1
+### ensure_type/2/1
 
 <blockquote>
 
-[//]: # (ensure_type_ok/2)
+[//]: # (ensure_type/2)
 
 Ensures that struct conforms to its `t()` type and all preconditions
 are fulfilled.
@@ -279,7 +279,7 @@ Otherwise returns the error in the shape of `{:error, message_by_field}`.
 Useful for struct validation when its fields changed with map syntax
 or with `Map` module functions.
 
-[//]: # (ensure_type_ok/2)
+[//]: # (ensure_type/2)
 
 </blockquote>
 

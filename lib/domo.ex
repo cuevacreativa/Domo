@@ -4,7 +4,7 @@ defmodule Domo do
   @new_doc Domo.Doc.readme_doc("[//]: # (new!/1)")
   @new_ok_doc Domo.Doc.readme_doc("[//]: # (new/2)")
   @ensure_type_doc Domo.Doc.readme_doc("[//]: # (ensure_type!/1)")
-  @ensure_type_ok_doc Domo.Doc.readme_doc("[//]: # (ensure_type_ok/2)")
+  @ensure_type_ok_doc Domo.Doc.readme_doc("[//]: # (ensure_type/2)")
   @typed_fields_doc Domo.Doc.readme_doc("[//]: # (typed_fields/1)")
   @required_fields_doc Domo.Doc.readme_doc("[//]: # (required_fields/1)")
 
@@ -17,9 +17,9 @@ defmodule Domo do
   @callback new(enumerable :: Enumerable.t(), opts :: keyword()) :: {:ok, struct()} | {:error, any()}
   @doc @ensure_type_doc
   @callback ensure_type!(struct :: struct()) :: struct()
-  @callback ensure_type_ok(struct :: struct()) :: {:ok, struct()} | {:error, any()}
+  @callback ensure_type(struct :: struct()) :: {:ok, struct()} | {:error, any()}
   @doc @ensure_type_ok_doc
-  @callback ensure_type_ok(struct :: struct(), opts :: keyword()) :: {:ok, struct()} | {:error, any()}
+  @callback ensure_type(struct :: struct(), opts :: keyword()) :: {:ok, struct()} | {:error, any()}
   @callback typed_fields() :: [atom()]
   @doc @typed_fields_doc
   @callback typed_fields(opts :: keyword()) :: [atom()]
@@ -47,7 +47,7 @@ defmodule Domo do
         # new!/1
         # new/2
         # ensure_type!/1
-        # ensure_type_ok/2
+        # ensure_type/2
         # typed_fields/1
         # required_fields/1
       end
@@ -70,7 +70,7 @@ defmodule Domo do
 
   The macro adds the following functions to the current module, that are the
   facade for the generated `TypeEnsurer` module:
-  `new!/1`, `new/2`, `ensure_type!/1`, `ensure_type_ok/2`, `typed_fields/1`,
+  `new!/1`, `new/2`, `ensure_type!/1`, `ensure_type/2`, `typed_fields/1`,
   `required_fields/1`.
 
   ## Options
@@ -257,15 +257,15 @@ defmodule Domo do
           struct = #{unquote(short_module)}.#{unquote(new_fun_name)}(first_field: value1, second_field: value2, ...)
 
           {:ok, _updated_struct} =
-            #{unquote(short_module)}.ensure_type_ok(%{struct | first_field: new_value})
+            #{unquote(short_module)}.ensure_type(%{struct | first_field: new_value})
 
           {:ok, _updated_struct} =
             struct
             |> Map.put(:first_field, new_value1)
             |> Map.put(:second_field, new_value2)
-            |> #{unquote(short_module)}.ensure_type_ok()
+            |> #{unquote(short_module)}.ensure_type()
       """
-      def ensure_type_ok(struct, opts \\ []) do
+      def ensure_type(struct, opts \\ []) do
         %name{} = struct
 
         unless name == __MODULE__ do

@@ -47,7 +47,7 @@ defmodule FunctionalCoreStruct do
   # new!
   # new
   # ensure_type!
-  # ensure_type_ok
+  # ensure_type
   # typed_fields
   # required_fields
 end

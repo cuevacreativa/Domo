@@ -64,7 +64,7 @@ defmodule DomoTest do
       assert Kernel.function_exported?(Receiver, :new!, 1)
       assert Kernel.function_exported?(Receiver, :new, 1)
       assert Kernel.function_exported?(Receiver, :ensure_type!, 1)
-      assert Kernel.function_exported?(Receiver, :ensure_type_ok, 1)
+      assert Kernel.function_exported?(Receiver, :ensure_type, 1)
     end
 
     test "generates TypeEnsurer modules for Elixir structs from standard library" do
@@ -356,7 +356,7 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
 
       account = struct!(Account, id: "ak47896", name: :john_smith, money: 0)
 
-      assert {:error, messages} = Account.ensure_type_ok(account, maybe_filter_precond_errors: true)
+      assert {:error, messages} = Account.ensure_type(account, maybe_filter_precond_errors: true)
 
       [
         name: [
@@ -386,7 +386,7 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
 
       account = struct!(Account, id: "akz-47896", name: "John Smith", money: 1)
 
-      assert Account.ensure_type_ok(account, maybe_filter_precond_errors: true) == {:error, t: expected_messages}
+      assert Account.ensure_type(account, maybe_filter_precond_errors: true) == {:error, t: expected_messages}
 
       compile_account_custom_errors_struct()
 
@@ -399,7 +399,7 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
 
       account = struct!(AccountCustomErrors, id: "ak47896", name: "John Smith", money: 2)
 
-      assert AccountCustomErrors.ensure_type_ok(account, maybe_filter_precond_errors: true) == {:error, id: expected_messages}
+      assert AccountCustomErrors.ensure_type(account, maybe_filter_precond_errors: true) == {:error, id: expected_messages}
 
       compile_money_struct()
 
@@ -416,7 +416,7 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
 
       money = struct!(Money, amount: 0.3)
 
-      assert Money.ensure_type_ok(money, maybe_filter_precond_errors: true) == {:error, amount: expected_messages}
+      assert Money.ensure_type(money, maybe_filter_precond_errors: true) == {:error, amount: expected_messages}
     end
 
     test "custom error messages are bypassed as in shape given in precond functions" do
@@ -482,7 +482,7 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
           {"new!/1", "Foo.new!(title: \"hello\")", "Foo.new!(title: :hello)"},
           {"new/1", "Foo.new(title: \"hello\")", "Foo.new(title: :hello)"},
           {"ensure_type!/1", "Foo.ensure_type!(%Foo{title: \"hello\"})", "Foo.ensure_type!(%Foo{title: :hello})"},
-          {"ensure_type_ok/1", "Foo.ensure_type_ok(%Foo{title: \"hello\"})", "Foo.ensure_type_ok(%Foo{title: :hello})"}
+          {"ensure_type/1", "Foo.ensure_type(%Foo{title: \"hello\"})", "Foo.ensure_type(%Foo{title: :hello})"}
         ] do
       test "ensures data integrity of a struct built at the compile time via #{fun} for being a default value" do
         compile_module_with_default_struct(unquote(correct_fun_call))

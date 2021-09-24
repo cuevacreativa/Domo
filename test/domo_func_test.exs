@@ -326,13 +326,13 @@ defmodule DomoFuncTest do
     end
   end
 
-  describe "ensure_type_ok/1" do
+  describe "ensure_type/1" do
     setup [:build_sample_structs]
 
     test "returns :ok if the struct matches it's type", %{bob: bob} do
       dr_bob = %{bob | title: :dr}
 
-      assert {:ok, dr_bob} == Recipient.ensure_type_ok(dr_bob)
+      assert {:ok, dr_bob} == Recipient.ensure_type(dr_bob)
     end
 
     test "returns an :error tuple for the struct mismatching it's type", %{bob: bob} do
@@ -342,7 +342,7 @@ defmodule DomoFuncTest do
               name: """
               Invalid value :bob_hope for field :name of %Recipient{}. Expected the value \
               matching the <<_::_*8>> type.\
-              """} = Recipient.ensure_type_ok(malformed_bob)
+              """} = Recipient.ensure_type(malformed_bob)
     end
 
     test "returns :error tuple for arguments mismatching field's type precondition", %{joe: joe} do
@@ -352,7 +352,7 @@ defmodule DomoFuncTest do
               age: """
               Invalid value 450 for field :age of %RecipientWithPrecond{}. Expected the value matching the integer() type. \
               And a true value from the precondition function "&(&1 < 300)" defined for RecipientWithPrecond.age() type.\
-              """} = RecipientWithPrecond.ensure_type_ok(malformed_joe)
+              """} = RecipientWithPrecond.ensure_type(malformed_joe)
     end
 
     test "returns :error tuple for struct type precondition", %{joe: joe} do
@@ -363,7 +363,7 @@ defmodule DomoFuncTest do
               Invalid value %RecipientWithPrecond{age: 37, name: "Bob Thornton", title: :mr}. \
               Expected the value matching the RecipientWithPrecond.t() type. And a true value from the precondition \
               function "&(String.length(&1.name) < 10)" defined for RecipientWithPrecond.t() type.\
-              """} = RecipientWithPrecond.ensure_type_ok(malformed_joe)
+              """} = RecipientWithPrecond.ensure_type(malformed_joe)
     end
 
     test "raises an error if the passed struct's name differs from the module's name" do
@@ -373,7 +373,7 @@ defmodule DomoFuncTest do
                    the first argument value instead of EmptyStruct.\
                    """,
                    fn ->
-                     Recipient.ensure_type_ok(%EmptyStruct{})
+                     Recipient.ensure_type(%EmptyStruct{})
                    end
     end
   end
