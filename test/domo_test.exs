@@ -62,7 +62,7 @@ defmodule DomoTest do
       _ = DomoMixTask.run([])
 
       assert Kernel.function_exported?(Receiver, :new!, 1)
-      assert Kernel.function_exported?(Receiver, :new_ok, 1)
+      assert Kernel.function_exported?(Receiver, :new, 1)
       assert Kernel.function_exported?(Receiver, :ensure_type!, 1)
       assert Kernel.function_exported?(Receiver, :ensure_type_ok, 1)
     end
@@ -319,7 +319,7 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
                      _ = AccountCustomErrors.new!(id: "ak47896", name: "John Smith", money: 2)
                    end
 
-      assert {:error, id: "Id should match format xxx-12345"} = AccountCustomErrors.new_ok(id: "ak47896", name: "John Smith", money: 2)
+      assert {:error, id: "Id should match format xxx-12345"} = AccountCustomErrors.new(id: "ak47896", name: "John Smith", money: 2)
 
       assert_raise ArgumentError,
                    "the following values should have types defined for fields of the AccountCustomErrors struct:\n * :empty_name_string",
@@ -327,7 +327,7 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
                      _ = AccountCustomErrors.new!(id: "adk-47896", name: "", money: 2)
                    end
 
-      assert {:error, name: :empty_name_string} = AccountCustomErrors.new_ok(id: "adk-47896", name: "", money: 2)
+      assert {:error, name: :empty_name_string} = AccountCustomErrors.new(id: "adk-47896", name: "", money: 2)
     end
 
     test "returns list of precondition errors or single string message for each field given maybe_filter_precond_errors: true option for *_ok functions" do
@@ -335,7 +335,7 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
 
       _ = DomoMixTask.run([])
 
-      assert {:error, messages} = Account.new_ok([id: "ak47896", name: :john_smith, money: 0], maybe_filter_precond_errors: true)
+      assert {:error, messages} = Account.new([id: "ak47896", name: :john_smith, money: 0], maybe_filter_precond_errors: true)
 
       [
         name: [
@@ -382,7 +382,7 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
         """
       ]
 
-      assert Account.new_ok([id: "akz-47896", name: "John Smith", money: 1], maybe_filter_precond_errors: true) == {:error, t: expected_messages}
+      assert Account.new([id: "akz-47896", name: "John Smith", money: 1], maybe_filter_precond_errors: true) == {:error, t: expected_messages}
 
       account = struct!(Account, id: "akz-47896", name: "John Smith", money: 1)
 
@@ -394,7 +394,7 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
 
       expected_messages = ["Id should match format xxx-12345"]
 
-      assert AccountCustomErrors.new_ok([id: "ak47896", name: "John Smith", money: 2], maybe_filter_precond_errors: true) ==
+      assert AccountCustomErrors.new([id: "ak47896", name: "John Smith", money: 2], maybe_filter_precond_errors: true) ==
                {:error, id: expected_messages}
 
       account = struct!(AccountCustomErrors, id: "ak47896", name: "John Smith", money: 2)
@@ -412,7 +412,7 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
         """
       ]
 
-      assert Money.new_ok([amount: 0.3], maybe_filter_precond_errors: true) == {:error, amount: expected_messages}
+      assert Money.new([amount: 0.3], maybe_filter_precond_errors: true) == {:error, amount: expected_messages}
 
       money = struct!(Money, amount: 0.3)
 
@@ -424,7 +424,7 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
 
       {:ok, []} = DomoMixTask.run([])
 
-      assert {:error, messages} = AccountCustomizedMessages.new_ok(id: "ak47896", money: 0)
+      assert {:error, messages} = AccountCustomizedMessages.new(id: "ak47896", money: 0)
 
       assert messages == [
                money: """
@@ -434,7 +434,7 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
                id: {:format_mismatch, "xxx-yyyyy where x = a-z, y = 0-9"}
              ]
 
-      assert {:error, messages} = AccountCustomizedMessages.new_ok([id: "ak47896", money: 0], maybe_filter_precond_errors: true)
+      assert {:error, messages} = AccountCustomizedMessages.new([id: "ak47896", money: 0], maybe_filter_precond_errors: true)
 
       assert messages == [
                money: [
@@ -446,11 +446,11 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
                id: [{:format_mismatch, "xxx-yyyyy where x = a-z, y = 0-9"}]
              ]
 
-      assert {:error, messages} = AccountCustomizedMessages.new_ok(id: "aky-47896", money: 1)
+      assert {:error, messages} = AccountCustomizedMessages.new(id: "aky-47896", money: 1)
 
       assert messages == [t: {:overdraft, :overflow}]
 
-      assert {:error, messages} = AccountCustomizedMessages.new_ok([id: "aky-47896", money: 1], maybe_filter_precond_errors: true)
+      assert {:error, messages} = AccountCustomizedMessages.new([id: "aky-47896", money: 1], maybe_filter_precond_errors: true)
 
       assert messages == [t: [{:overdraft, :overflow}]]
     end
@@ -479,8 +479,8 @@ a true value from the precondition.*defined for Account.t\(\) type./s, fn ->
     end
 
     for {fun, correct_fun_call, wrong_fun_call} <- [
-          {"new/1", "Foo.new!(title: \"hello\")", "Foo.new!(title: :hello)"},
-          {"new_ok/1", "Foo.new_ok(title: \"hello\")", "Foo.new_ok(title: :hello)"},
+          {"new!/1", "Foo.new!(title: \"hello\")", "Foo.new!(title: :hello)"},
+          {"new/1", "Foo.new(title: \"hello\")", "Foo.new(title: :hello)"},
           {"ensure_type!/1", "Foo.ensure_type!(%Foo{title: \"hello\"})", "Foo.ensure_type!(%Foo{title: :hello})"},
           {"ensure_type_ok/1", "Foo.ensure_type_ok(%Foo{title: \"hello\"})", "Foo.ensure_type_ok(%Foo{title: :hello})"}
         ] do

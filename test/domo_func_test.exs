@@ -44,7 +44,7 @@ defmodule DomoFuncTest do
     {:ok, bob: struct!(Recipient, %{title: :mr, name: "Bob", age: 27}), joe: struct!(RecipientWithPrecond, %{title: :mr, name: "Bob", age: 37})}
   end
 
-  describe "new/1 constructor" do
+  describe "new!/1 constructor" do
     test "makes a struct" do
       assert %Recipient{title: :mr, name: "Bob", age: 27} ==
                Recipient.new!(title: :mr, name: "Bob", age: 27)
@@ -179,16 +179,16 @@ defmodule DomoFuncTest do
     end
   end
 
-  describe "new_ok/1 constructor" do
+  describe "new/1 constructor" do
     test "makes a struct and return it in the :ok tuple" do
       assert {:ok, %Recipient{title: :mr, name: "Bob", age: 27}} ==
-               Recipient.new_ok(title: :mr, name: "Bob", age: 27)
+               Recipient.new(title: :mr, name: "Bob", age: 27)
 
-      assert {:ok, %EmptyStruct{}} == EmptyStruct.new_ok()
+      assert {:ok, %EmptyStruct{}} == EmptyStruct.new()
     end
 
     test "returns :error tuple for arguments mismatching struct's field types" do
-      assert {:error, error} = Recipient.new_ok(title: "mr", name: "Bob", age: 27.5)
+      assert {:error, error} = Recipient.new(title: "mr", name: "Bob", age: 27.5)
 
       assert error == [
                title: """
@@ -203,7 +203,7 @@ defmodule DomoFuncTest do
     end
 
     test "returns :error tuple for arguments mismatching field's type precondition" do
-      assert {:error, error} = RecipientWithPrecond.new_ok(title: :mr, name: "Bob", age: 370)
+      assert {:error, error} = RecipientWithPrecond.new(title: :mr, name: "Bob", age: 370)
 
       assert error == [
                age: """
@@ -214,7 +214,7 @@ defmodule DomoFuncTest do
     end
 
     test "returns :error tuple for struct type precondition" do
-      assert {:error, error} = RecipientWithPrecond.new_ok(title: :mr, name: "Bob Thornton", age: 37)
+      assert {:error, error} = RecipientWithPrecond.new(title: :mr, name: "Bob Thornton", age: 37)
 
       assert error == [
                t: """
@@ -226,7 +226,7 @@ defmodule DomoFuncTest do
     end
 
     test "returns :error tuple for a missing key" do
-      assert {:error, error} = Recipient.new_ok(name: "Bob", age: 27)
+      assert {:error, error} = Recipient.new(name: "Bob", age: 27)
 
       assert error == [
                title: """
@@ -238,9 +238,9 @@ defmodule DomoFuncTest do
 
     test "makes a new struct discarding keys that don't exist in the struct" do
       assert {:ok, %Recipient{title: :mr, name: "Bob", age: 27}} ==
-               Recipient.new_ok(title: :mr, name: "Bob", age: 27, extra_key: true)
+               Recipient.new(title: :mr, name: "Bob", age: 27, extra_key: true)
 
-      assert {:ok, %EmptyStruct{}} == EmptyStruct.new_ok(extra_key: true)
+      assert {:ok, %EmptyStruct{}} == EmptyStruct.new(extra_key: true)
     end
   end
 

@@ -76,10 +76,10 @@ approved limit. That can be expressed like the following:
 
 Then `PurchaseOrder` struct can be constructed consistently like that:
 
-    iex> {:ok, po} = PurchaseOrder.new_ok()
+    iex> {:ok, po} = PurchaseOrder.new()
     {:ok, %PurchaseOrder{approved_limit: 200, id: 1000, items: []}}
 
-    iex> PurchaseOrder.new_ok(id: 500, approved_limit: 0)
+    iex> PurchaseOrder.new(id: 500, approved_limit: 0)
     {:error,
      [
        id: "Invalid value 500 for field :id of %PurchaseOrder{}. Expected the 
@@ -207,11 +207,11 @@ and raise `KeyError` otherwise.
 
 </blockquote>
 
-### new_ok/2/1/0
+### new/2/1/0
 
 <blockquote>
 
-[//]: # (new_ok/2)
+[//]: # (new/2)
 
 Creates a struct validating type conformance and preconditions.
 
@@ -242,7 +242,7 @@ are automatically discarded.
     back to the user. F.e. when the field's type is another struct.
     Default is `false`.
 
-[//]: # (new_ok/2)
+[//]: # (new/2)
 
 </blockquote>
 
